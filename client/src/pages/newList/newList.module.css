@@ -1,0 +1,79 @@
+/* Centered Content */
+.centeredContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #262626;
+  font-family: Arial, sans-serif;
+}
+
+/* Modal Box */
+.modalBox {
+  background-color: #2C3333;
+  border-radius: 5px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  width: 400px;
+  text-align: center;
+}
+
+@media screen and (max-width: 480px) {
+  .modalBox {
+    margin: auto 10px;
+    width: 90%;
+  }
+}
+
+/* Title */
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+/* Input */
+.input {
+  width: 90%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  background-color: #3c3c3c;
+  color: #ffffff;
+}
+
+/* Buttons */
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+@media screen and (max-width: 480px) {
+  .buttons {
+    justify-content: center;
+  }
+}
+
+.button {
+  background-color: #F15A59;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  margin-left: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #843f3fe9;
+}
+
+.button:focus {
+  outline: none;
+}

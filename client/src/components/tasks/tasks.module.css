@@ -1,0 +1,148 @@
+.collection {
+    display: flex;
+    align-items: center;
+    padding: 20px 16px;
+    width: 100%;
+    height: 10px;
+    background-color: #2c3333;
+    color: #fff;
+    border-top-right-radius: 8px;
+    border-top-left-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    margin-right: 20px;
+    border-radius: 50%;
+    background-color: #f15a59;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  
+  .task {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    width: 100%;
+    height: 54px;
+    background-color: #2c333389;
+    color: #fff;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.268);
+    margin-bottom: 15px;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .check {
+    display: flex;
+    align-items: center;
+    margin-left: 5px;
+  }
+  
+  .check input[type="checkbox"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #dddddd;
+    margin-right: 10px;
+    cursor: pointer;
+    transition: border-color 0.2s ease-in-out;
+  }
+  
+  .check input[type="checkbox"]:checked {
+    border-color: #fff;
+    background-color: #fff;
+  }
+  
+  .check .taskTitle {
+    font-size: 16px;
+    color: #ffffff;
+  }
+  
+  .check .taskTitle::before {
+    content: "";
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 10px;
+    border-radius: 50%;
+    background-color: #fff;
+    transition: opacity 0.2s ease-in-out;
+    opacity: 0;
+  }
+  
+  .check input[type="checkbox"]:checked + .taskTitle::before {
+    opacity: 1;
+  }
+  
+  .taskButtons {
+    display: flex;
+    align-items: center;
+  }
+  
+  .taskButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-left: 10px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    border-radius: 50%;
+  }
+  
+  .taskButton:hover {
+    background-color: #f15a59;
+  }
+  
+  .taskButton svg {
+    width: 15px;
+    height: 15px;
+    color: #fff;
+  }
+  .task:hover{
+    background-color: #2c333322;
+  }
+
+
+  .complete{
+    text-decoration: line-through;
+    background-color: #47A992;
+    opacity: 0.7;
+  }
+/*to make the transition when clicked*/
+  /* .container:active{
+    transform: scale(0.95); 
+  } */
+
+
+
+
+
+  @media (max-width: 480px) {
+    .collection{
+        height: auto;
+        padding: 12px;
+        width: 100%;
+    }
+    .task {
+      height: auto;
+      /* flex-direction: column; */
+      padding: 12px;
+      width: 100%;
+    }
+    
+
+  }

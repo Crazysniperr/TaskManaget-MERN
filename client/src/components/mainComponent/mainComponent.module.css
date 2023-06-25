@@ -1,0 +1,50 @@
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    
+}
+.con{
+    width: 55%;
+}
+
+.heading {
+    font-size: 24px;
+    font-weight: bold;
+
+    margin-top: 25px;
+  }
+  
+  .greeting {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 46px;
+    font-weight: bold;
+    color: #fff;
+
+    /* margin-bottom: 20px; */
+  }
+  .greeting img{
+    width: 200px;
+    height: 200px;
+  }
+
+  /* check the mobile view, so that content should not go outside the view */
+  
+  @media (max-width: 480px) {
+    .greeting{
+    /* flex-direction:column-reverse; */
+    margin: 15px 0;
+    }
+    /* .greeting img{
+      width: 150px;
+      height: 150px;
+    }
+     */
+    .con{
+      margin-right: 25px;
+        width: 80%;
+    }
+  }
