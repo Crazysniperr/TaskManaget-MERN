@@ -19,17 +19,10 @@
   "type": "module",
   "scripts": {
     "start": "nodemon index"
-<<<<<<< HEAD
-  },
-  "engines": {
-    "node": ">=14 <15"
-  },
-=======
   }, 
   "engines": {
     "node": ">=14 <15"
     },
->>>>>>> c9c029645d001cfb148a44e5f53d255ceac12d91
   "author": "",
   "license": "ISC",
   "keywords": [],
