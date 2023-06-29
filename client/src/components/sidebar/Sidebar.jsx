@@ -30,9 +30,10 @@ const Sidebar = () => {
             to={`/lists/${list._id}`}
             key={list._id}
             className={`${classes.list_menu_item} `}
+            
           >
             <div className={classes.menu}>
-              <span className={classes.icon}>
+              <span className={classes.icon} style={{ backgroundColor: list.color }}>
                 <FontAwesomeIcon icon={faFolder} />
               </span>
               <span className={classes.title}>{list.title}</span>
@@ -41,7 +42,8 @@ const Sidebar = () => {
         ))}
       </div>
       <NavLink to="/NewList">
-      <button className={classes.btn}>New List</button></NavLink>
+        <button className={classes.btn}>New List</button>
+      </NavLink>
     </div>
   );
 };

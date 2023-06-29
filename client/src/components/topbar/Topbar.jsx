@@ -1,13 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faHome,
-  faTachometerAlt,
-  faFolderPlus,
-  faPlus,
-  faUser,
-  faSearch,
-} from "@fortawesome/free-solid-svg-icons";
+import { faHome, faTachometerAlt, faFolderPlus, faPlus, faUser, faSearch } from "@fortawesome/free-solid-svg-icons";
 import classes from "./topbar.module.css";
 import axios from "axios";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -20,6 +13,19 @@ const Topbar = () => {
   const location = useLocation();
   const [showModal, setShowModal] = useState(false);
   const modalRef = useRef(null);
+  const [listMenu, setListMenu] = useState([]);
+
+  useEffect(() => {
+    const fetchLists = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/lists");
+        setListMenu(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchLists();
+  }, []);
 
   const handleCollectionClick = () => {
     setShowModal(true);
@@ -39,28 +45,6 @@ const Topbar = () => {
     }
   };
 
-  const [listMenu, setListMenu] = useState([]);
-
-  useEffect(() => {
-    const fetchLists = async () => {
-      try {
-        const response = await axios.get("http://localhost:8080/lists");
-        setListMenu(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchLists();
-  }, []);
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleOutsideClick);
-
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
-  }, []);
-
   const handleAddTaskClick = () => {
     if (location.pathname === "/taskmanager") {
       setShowModal(true);
@@ -76,18 +60,11 @@ const Topbar = () => {
     <div className={classes.topbar}>
       <div className={classes.container}>
         <div className={classes.one}>
-          <div
-            className={classes.dash}
-            onClick={() => navigate("/taskmanager")}
-          >
+          <div className={classes.dash} onClick={() => navigate("/taskmanager")}>
             <FontAwesomeIcon icon={faHome} />
             <span>Dashboard</span>
           </div>
-          <div
-            className={classes.dash}
-            id={classes.collection}
-            onClick={handleCollectionClick}
-          >
+          <div className={classes.dash} id={classes.collection} onClick={handleCollectionClick}>
             <FontAwesomeIcon icon={faFolderPlus} />
             <span>Collections</span>
           </div>
@@ -109,25 +86,16 @@ const Topbar = () => {
       {/* Modal */}
       {showModal && (
         <div className={classes.modal} onClick={handleCloseModal}>
-          <div
-            ref={modalRef}
-            className={classes.modalContent}
-            onClick={handleModalClick}
-          >
+          <div ref={modalRef} className={classes.modalContent} onClick={handleModalClick}>
             <div className={classes.modalCon}>
               <div className={classes.modalHeader}>
                 <h2>Select a Collection</h2>
               </div>
               <div className={classes.collectionContainer}>
                 {listMenu.map((list) => (
-                  <Link
-                    to={`/lists/${list._id}`}
-                    key={list._id}
-                    className={`${classes.list_menu_item}`}
-                    onClick={handleCloseModal}
-                  >
-                    <div className={`${classes.card} card`}>
-                      <span className={classes.icon}>
+                  <Link to={`/lists/${list._id}/NewTask`} key={list._id} className={`${classes.list_menu_item}`} onClick={handleCloseModal}>
+                    <div className={`${classes.card} card`} >
+                      <span className={classes.icon}style={{ backgroundColor: list.color }}>
                         <FontAwesomeIcon icon={faFolder} />
                       </span>
                       <span className={classes.title}>{list.title}</span>
@@ -135,6 +103,9 @@ const Topbar = () => {
                   </Link>
                 ))}
               </div>
+              <Link className={classes.Link} to="/NewList">
+                <button className={classes.btn}>New List</button>
+              </Link>
             </div>
           </div>
         </div>

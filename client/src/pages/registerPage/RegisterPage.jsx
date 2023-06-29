@@ -5,8 +5,7 @@ import {Link, useNavigate} from "react-router-dom"
 import axios from 'axios';
 import user from "../../assets/user.svg"
 import BackButton from '../../components/backButton/BackButton';
-
-
+import {Loader1} from "../../components/loader1"
 
 
 const RegisterPage = () => {
@@ -14,6 +13,7 @@ const RegisterPage = () => {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
 
@@ -24,6 +24,7 @@ const RegisterPage = () => {
       alert('Please enter all credentials');
       return;
     }
+    setLoading(true);
 
     try {
       await axios.post('http://localhost:8080/user', {
@@ -39,6 +40,8 @@ const RegisterPage = () => {
       } else {
         console.error('An error occurred');
       }
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -51,6 +54,11 @@ const RegisterPage = () => {
   return (
     <div className={classes.container}>
       <BackButton/>
+      {loading && (
+          <div className={classes.loader}>
+            <Loader1 />
+          </div>
+        )}
       <form className={classes.form_container} onSubmit={onSubmit}>
         <div className={classes.logo_container}><img src={emoji1} alt="wink" /></div>
         <div className={classes.title_container}>
@@ -95,7 +103,7 @@ const RegisterPage = () => {
         </button>
         
         
-        <Link className={classes.Link}to="/login">
+        <Link className={classes.Link}to="/user/login">
         <button title="Sign In" className={classes.sign_in_apl}>
           <span>Already tried Listy? <b>Login 😎</b> </span>
         </button></Link>

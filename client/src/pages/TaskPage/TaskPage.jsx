@@ -29,6 +29,7 @@ const TaskPage = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [heading, setHeading] = useState("Dashboard");
 
+
   useEffect(() => {
     const fetchTasks = async () => {
       setLoading(true);
@@ -37,6 +38,7 @@ const TaskPage = () => {
         if (listId) {
           response = await axios.get(`http://localhost:8080/lists/${listId}/tasks`);
           setHeading(response.data.listName);
+          console.log(response.data.list)
           setTasks(response.data.tasks);
         } else {
           response = await axios.get("http://localhost:8080/lists/tasks");
@@ -193,6 +195,7 @@ const TaskPage = () => {
                   className={`${classes.task} ${
                     task.completed ? classes.complete : ""
                   } task`}
+                  style={{ borderTop: `4px solid ${task._listId.color}` }}
                 >
                   <div className={`${classes.check} check`}>
                     <div className={`${classes.wrapper} wrapper`}>
@@ -221,6 +224,7 @@ const TaskPage = () => {
                 </div>
               ))
             )}
+            
           </div>
         </div>
       </div>

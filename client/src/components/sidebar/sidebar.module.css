@@ -63,7 +63,7 @@
   height: 30px;
   margin: 0 20px;
   border-radius: 30%;
-  background-image: linear-gradient(to right top, #ff0091, #f5179e, #e927ab, #db34b6, #cc3fc0, #ca41c7, #c843cd, #c645d4, #d43ed9, #e235de, #f028e2, #ff0ce6);
+  /* background-image: linear-gradient(to right top, #ff0091, #f5179e, #e927ab, #db34b6, #cc3fc0, #ca41c7, #c843cd, #c645d4, #d43ed9, #e235de, #f028e2, #ff0ce6); */
   color: white;
   font-size: 15px;
   cursor: pointer;
