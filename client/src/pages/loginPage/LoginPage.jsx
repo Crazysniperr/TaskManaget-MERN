@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import classes from "./loginPage.module.css";
 import emoji from "../../assets/gif1.gif";
 import { Link, useNavigate } from "react-router-dom";
@@ -6,13 +6,25 @@ import axios from "axios";
 import BackButton from "../../components/backButton/BackButton";
 import Cookies from "js-cookie";
 import { Loader1 } from "../../components/loader1";
+import protect from "../../hooks/useProtect/useProtect.js";
+import GoogleLogin from "react-google-login";
 
+// const responseGoogle = async (response) => {
+//   try {
+//     window.location.href = 'http://localhost:8080/auth/google';
+//   } catch (err) {
+//     console.error(err);
+//     alert("Google login failed.");
+//   }
+// };
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const CLIENT_ID = "976561223428-ea4kfd06pemgkht7ov4pnfrf9vo75fr0.apps.googleusercontent.com";
+
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -22,21 +34,17 @@ const LoginPage = () => {
     }
     setLoading(true);
     try {
-      const response = await axios.post(
-        "http://localhost:8080/user/login",
-        {
-          email,
-          password,
-        }
-      );
-      // Set the token and user data in cookies or localStorage
+      const response = await axios.post("http://localhost:8080/users/login", {
+        email,
+        password,
+      });
 
-      // Set the access token in a cookie
-      Cookies.set("token", response.data.token);
-      // Example using localStorage:
+      localStorage.setItem("name", response.data.name);
+      const { accessToken, refreshToken ,firstName} = response.data;
 
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("username", response.data.name);
+      Cookies.set("access", accessToken);
+      Cookies.set("refresh", refreshToken);
+      Cookies.set("name", firstName);
       navigate("/taskmanager");
     } catch (err) {
       console.error("An error occurred");
@@ -46,16 +54,21 @@ const LoginPage = () => {
     }
   };
 
+  const responseGoogle = async () => {
+    try {
+      window.location.href = 'http://localhost:8080/auth/google';
+    } catch (error) {
+      console.error('Error fetching Google login response:', error);
+    }
+  };
+  // useEffect(() => {
+  //   handleGoogleResponse();
+  // }, []);
   return (
     <>
       <BackButton className={classes.backButton} />
 
       <div className={classes.container}>
-        {loading && (
-          <div className={classes.loader}>
-            <Loader1 />
-          </div>
-        )}
         <form className={classes.form_container} onSubmit={onSubmit}>
           <div className={classes.logo_container}>
             <img src={emoji} alt="emoji" />
@@ -146,7 +159,13 @@ const LoginPage = () => {
           </div>
           {/* <Link className={classes.Link} to="/taskmanager"> */}
           <button title="Sign In" type="submit" className={classes.sign_in_btn}>
-            <span>Log In</span>
+            {loading ? (
+              <div className={classes.loader}>
+                <Loader1 />
+              </div>
+            ) : (
+              <span>Log In</span>
+            )}
           </button>
           {/* </Link> */}
 
@@ -155,7 +174,8 @@ const LoginPage = () => {
             <span>Or</span>
             <hr className={classes.line} />
           </div>
-          <button title="Sign In" type="submit" className={classes.sign_in_ggl}>
+          
+          <button title="Sign In" type="button" className={classes.sign_in_ggl} onClick={responseGoogle}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="18"

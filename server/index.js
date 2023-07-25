@@ -1,69 +1,94 @@
 import express from "express";
 import cors from "cors";
+import jwt from 'jsonwebtoken';
 import session from 'express-session';
 import passport from "passport";
 import mongoose from "mongoose";
 import * as dotenv from 'dotenv';
-import {listRouter} from "./src/routes/list.js"
-import { authenticateToken, userRouter } from "./src/routes/auth.js";
-
-
+import { listRouter } from "./src/routes/list.js";
+import { userRouter } from "./src/routes/authnew.js";
+import passportInstance from "./passportSetup.js";
+import cookieParser from 'cookie-parser'; // Import the cookie-parser middleware
 dotenv.config();
 
 const dbUrl = process.env.MONGODB_URL;
 const port = process.env.PORT;
-const JWT_SECRET = process.env.JWT_SECRET;
-
-
-
-
-
+const rfresh = process.env.REFRESH_TOKEN_KEY;
+const refreshTokens = [];
+const acess = process.env.ACCESS_TOKEN_KEY;
 const app = express();
-
 
 function isLoggedIn(req, res, next) {
   req.user ? next() : res.sendStatus(401);
-}//this is the middleware
+}
 
 app.use(express.json());
-
 app.use(cors());
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
 
-// app.use(session({ secret: `${JWT_SECRET}` }));
-// app.use(passport.initialize());
-// app.use(passport.session());
-
-app.get( '/auth/google/callback',
-  passport.authenticate( 'google', {
-    successRedirect: '/taskmanager',
-    failureRedirect: '/auth/google/failure'
+app.use(
+  session({
+    secret: acess,
+    resave: false,
+    saveUninitialized: false,
   })
 );
 
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(cookieParser()); // Use cookie-parser middleware
 
+app.get(
+  '/auth/google',
+  passport.authenticate('google', {
+    scope: ['profile', 'email'],
+  })
+);
 
+app.get(
+  '/auth/google/callback',
+  passport.authenticate('google', {
+    failureRedirect: '/user/login',
+  }),
+  (req, res) => {
+    if (req.user) {
+      const user = req.user;
+      const firstName = user.name.split(' ')[0];
+      const accessTokenPayload = { userId: user._id, email: user.email, name: user.name };
+      const accessTokenOptions = { expiresIn: '7d' };
+      const accessToken = jwt.sign(accessTokenPayload, acess, accessTokenOptions);
 
-app.get('/auth/google/failure', (req, res) => {
-  res.send('Failed to authenticate..');
-});
+      const refreshTokenPayload = { userId: user._id, email: user.email, name: user.name };
+      const refreshTokenOptions = { expiresIn: '7d' };
+      const refreshToken = jwt.sign(refreshTokenPayload, rfresh, refreshTokenOptions);
+      refreshTokens.push(refreshToken);
 
+      // Set the access token and refresh token as cookies in the response
+      res.cookie('access', accessToken); // Set appropriate expiration time
+      res.cookie('refresh', refreshToken);
+      res.cookie('name', firstName); // Set appropriate expiration time
 
+      // Send the name in the JSON response
+      res.redirect('http://localhost:5173/taskmanager');
+    } else {
+      res.status(401).json({ error: 'Authentication failed' });
+    }
+  }
+);
 
 app.get('/', (req, res) => {
-    res.json('Hello, world!');
-  });
-
+  res.send('<a href="http://localhost:8080/auth/google">Authenticate with Google</a>')
+});
 
 app.use("/lists", listRouter);
-app.use("/user", userRouter);
+app.use("/users", userRouter);
 
-
-
-
-
-
-
-mongoose.connect(`${dbUrl}`,{
+mongoose.connect(`${dbUrl}`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => {

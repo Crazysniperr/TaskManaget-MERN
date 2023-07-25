@@ -111,4 +111,300 @@ function authenticateToken(req, res, next) {
   });
 }
 
-export { router as userRouter, authenticateToken };
+// let verifySession = async (req, res, next) => {
+//   try {
+//     let refreshToken = req.header('x-refresh-token');
+//     let _id = req.header('_id');
+
+//     let user = await UserModel.findByIdAndToken(_id, refreshToken);
+
+//     if (!user) {
+//       throw {
+//         'error': 'User not found. Make sure that the refresh token and user id are correct'
+//       };
+//     }
+
+//     req.user_id = user._id;
+//     req.userObject = user;
+//     req.refreshToken = refreshToken;
+
+//     let isSessionValid = false;
+
+//     user.sessions.forEach((session) => {
+//       if (session.token === refreshToken) {
+//         if (UserModel.hasRefreshTokenExpired(session.expiresAt) === false) {
+//           isSessionValid = true;
+//         }
+//       }
+//     });
+
+//     if (isSessionValid) {  
+//       next();
+//     } else {
+//       throw {
+//         'error': 'Refresh token has expired or the session is invalid'
+//       };
+//     }
+//   } catch (e) {
+//     res.status(401).send(e);
+//   }
+// };
+
+
+// router.post('/',verifySession, async (req, res) => {
+//   try {
+//     const { name, email, password } = req.body;
+//     const newUser = new UserModel({ name, email, password });
+
+//     await newUser.save();
+//     const refreshToken = await newUser.createSession();
+//     const accessToken = await newUser.generateAccessAuthToken();
+//     const authTokens = { accessToken, refreshToken };
+
+
+//     console.log(newUser); // Log the newUser object for debugging purposes
+
+//     res
+//       .header('x-refresh-token', authTokens.refreshToken)
+//       .header('x-access-token', authTokens.accessToken)
+//       .send(newUser);
+
+//   } catch (e) {
+//     console.error(e); // Log the error for debugging purposes
+//     res.status(400).send(e);
+//   }
+// });
+
+
+
+
+// router.post('/login',verifySession, async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
+
+//     const user = await UserModel.findByCredentials(email, password);
+//     const refreshToken = await user.createSession();
+//     const accessToken = await user.generateAccessAuthToken();
+//     const authTokens = { accessToken, refreshToken };
+//     console.log(user);
+
+//     res
+//       .header('x-refresh-token', authTokens.refreshToken)
+//       .header('x-access-token', authTokens.accessToken)
+//       .send(user);
+//   } catch (e) {
+//     res.status(400).send(e);
+//   }
+// });
+
+
+
+// router.get('/me/access-token', verifySession, async (req, res) => {
+//   try {
+//     const accessToken = await req.userObject.generateAccessAuthToken();
+//     res.header('x-access-token', accessToken).send({ accessToken });
+//   } catch (e) {
+//     res.status(400).send(e);
+//   }
+// });
+
+
+
+
+
+
+
+export { router as userRouter };
+
+
+
+// const validateRegistrationInput = (data) => {
+//   let errors = {};
+
+//   if (!data.name || data.name.trim() === "") {
+//     errors.name = "Name field is required";
+//   }
+
+//   if (!data.email || data.email.trim() === "") {
+//     errors.email = "Email field is required";
+//   }
+
+//   if (!data.password || data.password.trim() === "") {
+//     errors.password = "Password field is required";
+//   }
+
+//   return {
+//     errors,
+//     isValid: Object.keys(errors).length === 0,
+//   };
+// };
+
+// const validateLoginInput = (data) => {
+//   let errors = {};
+
+//   if (!data.email || data.email.trim() === "") {
+//     errors.email = "Email field is required";
+//   }
+
+//   if (!data.password || data.password.trim() === "") {
+//     errors.password = "Password field is required";
+//   }
+
+//   return {
+//     errors,
+//     isValid: Object.keys(errors).length === 0,
+//   };
+// };
+
+// const generateAccessToken = (user) => {
+//   const payload = {
+//     id: user._id,
+//     name: user.name,
+//     email: user.email,
+//   };
+
+//   const accessToken = jwt.sign(payload, process.env.JWT_SECRET, {
+//     expiresIn: parseInt(process.env.ACCESS_TOKEN_EXPIRATION),
+//   });
+
+//   return accessToken;
+// };
+
+
+// const generateRefreshToken = (user) => {
+//   const refreshToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET_REFRESH, {
+//     expiresIn: process.env.REFRESH_TOKEN_EXPIRATION,
+//   });
+
+//   return refreshToken;
+// };
+
+// const verifyToken = (req, res, next) => {
+//   const accessToken = req.header("x-access-token");
+
+//   if (!accessToken) {
+//     return res.status(401).json({ error: "Access token not found" });
+//   }
+
+//   try {
+//     const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
+//     req.user = decoded;
+//     next();
+//   } catch (err) {
+//     return res.status(401).json({ error: "Invalid access token" });
+//   }
+// };
+
+// const verifySession = async (req, res, next) => {
+//   try {
+//     const refreshToken = req.header("x-refresh-token");
+//     const _id = req.header("_id");
+
+//     // Skip verification for user registration route
+//     if (!refreshToken || !_id) {
+//       return next();
+//     }
+
+//     const user = await UserModel.findByIdAndToken(_id, refreshToken);
+
+//     if (!user) {
+//       throw {
+//         error: "User not found. Make sure that the refresh token and user id are correct",
+//       };
+//     }
+
+//     req.user_id = user._id;
+//     req.userObject = user;
+//     req.refreshToken = refreshToken;
+
+//     let isSessionValid = false;
+
+//     user.sessions.forEach((session) => {
+//       if (session.token === refreshToken) {
+//         if (UserModel.hasRefreshTokenExpired(session.expiresAt) === false) {
+//           isSessionValid = true;
+//         }
+//       }
+//     });
+
+//     if (isSessionValid) {
+//       next();
+//     } else {
+//       throw {
+//         error: "Refresh token has expired or the session is invalid",
+//       };
+//     }
+//   } catch (e) {
+//     res.status(401).send(e);
+//   }
+// };
+
+// router.post("/", verifySession, async (req, res) => {
+//   try {
+//     const { name, email, password } = req.body;
+//     console.log("Registration request:", req.body);
+
+//     // Validate registration input
+//     const { errors, isValid } = validateRegistrationInput(req.body);
+//     if (!isValid) {
+//       console.log("Validation errors:", errors);
+//       return res.status(400).json(errors);
+//     }
+
+//     const newUser = new UserModel({ name, email, password });
+
+//     await newUser.save();
+//     const refreshToken = await newUser.createSession();
+//     const accessToken = generateAccessToken(newUser);
+//     const authTokens = { accessToken, refreshToken };
+
+//     console.log("New user:", newUser); // Log the newUser object for debugging purposes
+
+//     // Log in the user by sending the access token in the response
+//     res
+//       .header("x-refresh-token", authTokens.refreshToken)
+//       .header("x-access-token", authTokens.accessToken)
+//       .send({ user: newUser, accessToken: authTokens.accessToken });
+      
+//   } catch (e) {
+//     console.error("Registration error:", e); // Log the error for debugging purposes
+//     res.status(400).send(e);
+//   }
+// });
+
+// router.post("/login", verifySession, async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
+
+//     const { errors, isValid } = validateLoginInput(req.body);
+//     if (!isValid) {
+//       return res.status(400).json(errors);
+//     }
+
+//     const user = await UserModel.findByCredentials(email, password);
+//     const refreshToken = await user.createSession();
+//     const accessToken = generateAccessToken(user);
+//     const authTokens = { accessToken, refreshToken };
+
+//     console.log(user);
+
+//     res
+//       .header("x-refresh-token", authTokens.refreshToken)
+//       .header("x-access-token", authTokens.accessToken)
+//       .send("LoggedIn")
+//       .send(user);
+//   } catch (e) {
+//     res.status(400).send(e);
+//   }
+// });
+
+// router.get("/me/access-token", verifySession, async (req, res) => {
+//   try {
+//     const accessToken = generateAccessToken(req.userObject);
+//     res.header("x-access-token", accessToken).send({ accessToken });
+//   } catch (e) {
+//     res.status(400).send(e);
+//   }
+// });
+
+// export { router as userRouter };

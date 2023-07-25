@@ -4,21 +4,35 @@ import { faHome, faTachometerAlt, faFolderPlus, faPlus, faUser, faSearch } from 
 import classes from "./topbar.module.css";
 import axios from "axios";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import useFetchUserName from "../../hooks/useFetchUserName/useFetchUserName";
 import { faFolder } from "@fortawesome/free-solid-svg-icons";
+import Cookies from "js-cookie";
+import protect from "../../hooks/useProtect/useProtect";
 
 const Topbar = () => {
   const navigate = useNavigate();
-  const userName = useFetchUserName();
+  const userName = localStorage.getItem("name");
   const location = useLocation();
   const [showModal, setShowModal] = useState(false);
   const modalRef = useRef(null);
+  const [flag, setFlag] = useState(0);
   const [listMenu, setListMenu] = useState([]);
+  const [logoutModal, setLogoutModal] = useState(false);
+  const [name, setName] = useState(null)
+  
 
   useEffect(() => {
     const fetchLists = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/lists");
+        const accessToken = Cookies.get("access");
+        const refreshToken = Cookies.get("refresh");
+        const namee = Cookies.get("name");
+        setName(namee);
+        await protect(navigate, accessToken, refreshToken);
+        const response = await axios.get("http://localhost:8080/lists", {
+          headers: {
+            authorization: `Bearer ${accessToken}`,
+          },
+        });
         setListMenu(response.data);
       } catch (error) {
         console.log(error);
@@ -33,6 +47,7 @@ const Topbar = () => {
 
   const handleCloseModal = () => {
     setShowModal(false);
+    setLogoutModal(false);
   };
 
   const handleModalClick = (e) => {
@@ -45,8 +60,24 @@ const Topbar = () => {
     }
   };
 
+  const handleLogoutModal = (e) => {
+    setLogoutModal(true);
+  };
+
+  const handleLogout = (e) => {
+    Cookies.remove("access");
+    Cookies.remove("refresh");
+
+    // Clear local storage
+    localStorage.clear();
+
+    // Navigate to login page
+    navigate("/user/login");
+  };
+
   const handleAddTaskClick = () => {
     if (location.pathname === "/taskmanager") {
+      setFlag(1);
       setShowModal(true);
     } else if (location.pathname.startsWith("/lists/")) {
       const listId = location.pathname.split("/")[2];
@@ -55,6 +86,22 @@ const Topbar = () => {
   };
 
   const listId = location.pathname.split("/")[2];
+
+  
+
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (logoutModal && !modalRef.current.contains(e.target)) {
+        handleCloseModal();
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [logoutModal]);
 
   return (
     <div className={classes.topbar}>
@@ -77,8 +124,8 @@ const Topbar = () => {
             <FontAwesomeIcon icon={faSearch} />
           </div>
           <div className={classes.imgdiv}>
-            <span>Hello, {userName}</span>
-            <FontAwesomeIcon className={classes.user} icon={faUser} />
+            <span>Hello, {name}</span>
+            <FontAwesomeIcon className={classes.user} icon={faUser} onClick={handleLogoutModal} />
           </div>
         </div>
       </div>
@@ -93,9 +140,14 @@ const Topbar = () => {
               </div>
               <div className={classes.collectionContainer}>
                 {listMenu.map((list) => (
-                  <Link to={`/lists/${list._id}/NewTask`} key={list._id} className={`${classes.list_menu_item}`} onClick={handleCloseModal}>
-                    <div className={`${classes.card} card`} >
-                      <span className={classes.icon}style={{ backgroundColor: list.color }}>
+                  <Link
+                    to={flag === 1 ? `/lists/${list._id}/newTask` : `/lists/${list._id}`}
+                    className={`${classes.list_menu_item}`}
+                    key={list._id}
+                    onClick={handleCloseModal}
+                  >
+                    <div className={`${classes.card} card`}>
+                      <span className={classes.icon} style={{ backgroundColor: list.color }}>
                         <FontAwesomeIcon icon={faFolder} />
                       </span>
                       <span className={classes.title}>{list.title}</span>
@@ -107,6 +159,15 @@ const Topbar = () => {
                 <button className={classes.btn}>New List</button>
               </Link>
             </div>
+          </div>
+        </div>
+      )}
+
+      {logoutModal && (
+        <div className={classes.logoutModal}>
+          <div className={classes.member} ref={modalRef} onClick={handleLogout}>
+            <FontAwesomeIcon className={classes.user} icon={faUser} />
+            <span>LogOut</span>
           </div>
         </div>
       )}

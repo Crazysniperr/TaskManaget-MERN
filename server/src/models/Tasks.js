@@ -1,22 +1,34 @@
-import mongoose from 'mongoose';
-
-
+import mongoose from "mongoose";
 
 const taskSchema = new mongoose.Schema({
   title: {
-      type: String,
-      required: true,
-      minlength: 1,
-      trim: true
+    type: String,
+    required: true,
+    minLength: 1,
+    trim: true,
   },
   _listId: {
-      type: mongoose.Types.ObjectId,
-      required: true
+    type: mongoose.Types.ObjectId,
+    ref: "lists",
+    required: true,
   },
-})
+  createdBy: {
+    type: mongoose.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  isChecked: {
+    type: Boolean,
+    default: false,
+  },
+  isCompleted: {
+    type: Boolean,
+    default: false,
+  },
+});
 
+export const taskModel = mongoose.model("tasks", taskSchema);
 
-export const taskModel = mongoose.model('tasks', taskSchema );
 
 
 

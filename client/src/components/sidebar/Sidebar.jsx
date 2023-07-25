@@ -4,22 +4,31 @@ import classes from "./sidebar.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFolder } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-
+import protect from "../../hooks/useProtect/useProtect";
+import Cookies from "js-cookie";
 const Sidebar = () => {
   const [listMenu, setListMenu] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchLists = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/lists");
+        const accessToken = Cookies.get("access");
+        const refreshToken = Cookies.get("refresh");
+        await protect(navigate, accessToken, refreshToken);
+        const response = await axios.get("http://localhost:8080/lists", {
+          headers: {
+            authorization: `Bearer ${accessToken}`,
+          },
+        });
         setListMenu(response.data);
       } catch (error) {
         console.log(error);
       }
     };
-    fetchLists();
-  }, []);
+
+    fetchData();
+  }, [navigate]);
 
   return (
     <div className={classes.container}>
@@ -30,7 +39,6 @@ const Sidebar = () => {
             to={`/lists/${list._id}`}
             key={list._id}
             className={`${classes.list_menu_item} `}
-            
           >
             <div className={classes.menu}>
               <span className={classes.icon} style={{ backgroundColor: list.color }}>

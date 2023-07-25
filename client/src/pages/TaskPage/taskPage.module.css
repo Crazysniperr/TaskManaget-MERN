@@ -201,6 +201,11 @@ border: 2px solid transparent;
   opacity: 0;
   cursor: pointer;
 }
+.wrapper .checkimg{
+  width: 25px;
+  height: 25px;
+  display: inline-block;
+}
 
 .wrapper label {
   position: relative;
@@ -262,6 +267,17 @@ border: 2px solid transparent;
 .taskButton:hover {
   background-image: linear-gradient(to right top, #ff0091, #f5179e, #e927ab, #db34b6, #cc3fc0, #ca41c7, #c843cd, #c645d4, #d43ed9, #e235de, #f028e2, #ff0ce6);
 }
+.btn {
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin: 10px 0;
+
+  background-image: linear-gradient(to right top, #ff0091, #f5179e, #e927ab, #db34b6, #cc3fc0, #ca41c7, #c843cd, #c645d4, #d43ed9, #e235de, #f028e2, #ff0ce6);
+  color: #fff;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
 
 .taskButton svg {
   width: 15px;
@@ -303,7 +319,9 @@ border: 2px solid transparent;
 .noTasks{
   display: flex;
   justify-content: center;
+  flex-direction: column;
   align-items: center;
+  gap: 5px;
 
 }
 

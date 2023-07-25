@@ -12,6 +12,11 @@ const listSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
+    createdBy: {
+        type: mongoose.Types.ObjectId,
+        ref: 'User',
+        required: true
+    }
 });
 
-  export const listModel = mongoose.model('lists', listSchema);
+export const listModel = mongoose.model('lists', listSchema);

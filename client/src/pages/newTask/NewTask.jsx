@@ -3,7 +3,8 @@ import styles from './newTask.module.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from "react-router-dom";
-
+import Cookies from "js-cookie";
+import protect from "../../hooks/useProtect/useProtect";
 const NewTask = () => {
     const { listId } = useParams();
   const [title, setTitle] = useState('');
@@ -22,11 +23,17 @@ const NewTask = () => {
         setMessage('Please enter the title.');
         return;
       }
-
+      const accessToken = Cookies.get("access");
+      const refreshToken = Cookies.get("refresh");
+      await protect(navigate, accessToken, refreshToken);
       const task = { title };
       setLoading(true);
 
-      await axios.post(`http://localhost:8080/lists/${listId}/tasks`, task);
+      await axios.post(`http://localhost:8080/lists/${listId}/tasks`, task,{
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+      });
       setMessage('Task created successfully!');
       setTitle('');
       navigate(`/lists/${listId}`);
