@@ -23,7 +23,7 @@ passport.use(
     {
       clientID: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
-      callbackURL: 'http://localhost:8080/auth/google/callback',
+      callbackURL: 'https://taskmanagermern.onrender.com/auth/google/callback',
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
