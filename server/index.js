@@ -82,7 +82,7 @@ app.get(
 );
 
 app.get('/', (req, res) => {
-  res.send('<a href="http://localhost:8080/auth/google">Authenticate with Google</a>')
+  res.send('<a href="https://taskmanagermern.onrender.com/auth/google">Authenticate with Google</a>')
 });
 
 app.use("/lists", listRouter);
