@@ -69,9 +69,9 @@ app.get(
       refreshTokens.push(refreshToken);
 
       // Set the access token and refresh token as cookies in the response
-      res.cookie('access', accessToken); // Set appropriate expiration time
-      res.cookie('refresh', refreshToken);
-      res.cookie('name', firstName); // Set appropriate expiration time
+res.cookie('access', accessToken, { domain: 'onrender.com', httpOnly: true, secure: true, sameSite: 'None' });
+      res.cookie('refresh', refreshToken, { domain: 'onrender.com', httpOnly: true, secure: true, sameSite: 'None' });
+      res.cookie('name', firstName, { domain: 'onrender.com', httpOnly: true, secure: true, sameSite: 'None' });
 
       // Send the name in the JSON response
       res.redirect('http://localhost:5173/taskmanager');
