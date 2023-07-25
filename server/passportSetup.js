@@ -3,8 +3,8 @@ import GoogleStrategy from 'passport-google-oauth20';
 import { UserModel } from './src/models/Users.js'; 
 import * as dotenv from 'dotenv';
 dotenv.config();
-const GOOGLE_CLIENT_ID = "976561223428-ea4kfd06pemgkht7ov4pnfrf9vo75fr0.apps.googleusercontent.com";
-const GOOGLE_CLIENT_SECRET = "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";
+const GOOGLE_CLIENT_ID = process.env.CLIENT_ID;
+const GOOGLE_CLIENT_SECRET = process.env.CLIENT_KEY;
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
