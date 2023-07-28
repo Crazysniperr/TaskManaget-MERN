@@ -74,7 +74,7 @@ res.cookie('access', accessToken, { domain: 'onrender.com', httpOnly: true, secu
       res.cookie('name', firstName, { domain: 'onrender.com', httpOnly: true, secure: true, sameSite: 'None' });
 
       // Send the name in the JSON response
-      res.redirect('http://localhost:5173/taskmanager');
+      res.redirect('https://crazysniperr-listy.netlify.app/taskmanager');
     } else {
       res.status(401).json({ error: 'Authentication failed' });
     }
